@@ -1,100 +1,34 @@
 import React from "react";
 import PropTypes from "prop-types";
 import VirtualList from "react-tiny-virtual-list";
-import { isNumber, isString, isObject } from "typechecker";
+import FlatListCache from "./FlatListCache";
+import FlatListItem from "./FlatListItem";
 
-// TODO: Multi-column, use Grid
-// TODO: Dynamic cell width
-
-class FlatListCache {
-  sizes = new Map();
-  defaultSize = 0;
-
-  getSize(key) {
-    return this.sizes.get(key) || this.defaultSize;
-  }
-
-  setSize(key, newSize) {
-    const lastSize = this.getSize(key);
-
-    if (newSize === lastSize) {
-      return false;
-    }
-
-    if (newSize === this.defaultSize) {
-      this.sizes.delete(key);
-    } else {
-      this.sizes.set(key, newSize);
-    }
-
+const isValidKey = key => {
+  if (typeof key === "string" && key.length > 0) {
     return true;
   }
 
-  setDefaultSize(defaultSize) {
-    this.defaultSize = defaultSize;
+  if (typeof key === "number" && !isNaN(key)) {
+    return true;
   }
 
-  removeSize(item) {
-    this.sizes.delete(item);
+  return false;
+};
+
+const defaultKeyGetter = ({ item, index }) => {
+  if (typeof item === "object" && item !== null) {
+    if (isValidKey(item.id)) {
+      return item.id;
+    }
+
+    if (isValidKey(item.key)) {
+      return item.key;
+    }
   }
 
-  clearSizes() {
-    this.sizes = new WeakMap();
-  }
-}
-
-class FlatListItemMeasurer extends React.PureComponent {
-  containerRef = React.createRef();
-
-  measure = () => {
-    const { measure, index } = this.props;
-    const element = this.containerRef.current;
-    const styleHeight = element.style.height;
-    element.style.height = "auto";
-    const newHeight = element.firstChild.offsetHeight;
-    element.style.height = styleHeight;
-    measure({
-      index,
-      height: newHeight
-    });
-  };
-
-  componentDidMount() {
-    const step = () => {
-      this.measure();
-      this.rafId = requestAnimationFrame(step);
-    };
-
-    this.rafId = requestAnimationFrame(step);
-  }
-
-  componentWillUnmount() {
-    cancelAnimationFrame(this.rafId);
-  }
-
-  render() {
-    const {
-      measure,
-      children,
-      style,
-      item,
-      index,
-      itemProps,
-      ...props
-    } = this.props;
-
-    return (
-      <div {...props} ref={this.containerRef} style={style}>
-        {children({
-          ...itemProps,
-          index,
-          item,
-          measure: this.measure
-        })}
-      </div>
-    );
-  }
-}
+  return index;
+};
 
 class FlatList extends React.PureComponent {
   cache = new FlatListCache();
@@ -104,7 +38,8 @@ class FlatList extends React.PureComponent {
     const { items, itemKey } = this.props;
     const item = items[index] || null;
     const key = item && itemKey({ index, item });
-    return key || `${index}`;
+    const result = isValidKey(key) ? key : index;
+    return `${result}`;
   }
 
   itemSize = index => {
@@ -126,7 +61,7 @@ class FlatList extends React.PureComponent {
   renderItem = ({ style, index }) => {
     const { children, items, itemProps } = this.props;
     return (
-      <FlatListItemMeasurer
+      <FlatListItem
         key={this.getKey(index)}
         index={index}
         item={items[index] || null}
@@ -135,7 +70,7 @@ class FlatList extends React.PureComponent {
         measure={this.measure}
       >
         {children}
-      </FlatListItemMeasurer>
+      </FlatListItem>
     );
   };
 
@@ -155,18 +90,6 @@ class FlatList extends React.PureComponent {
     );
   }
 }
-
-const defaultKeyGetter = ({ item, index }) => {
-  if (isObject(item) && item.id) {
-    const { id } = item;
-
-    if (isNumber(id) || isString(id)) {
-      return `${id}`;
-    }
-  }
-
-  return `${index}`;
-};
 
 FlatList.propTypes = {
   /**
