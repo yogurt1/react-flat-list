@@ -1,0 +1,26 @@
+{
+  "name": "flatlist",
+  "version": "1.0.0",
+  "description":
+    "React-Native's like <FlatList /> for React web\nDeps: react-tiny-virtal-list",
+  "keywords": [],
+  "main": "src/index.js",
+  "dependencies": {
+    "prop-types": "15.6.1",
+    "random-color": "1.0.1",
+    "random-words": "1.1.0",
+    "react": "16.3.2",
+    "react-dom": "16.3.2",
+    "react-scripts": "1.1.4",
+    "react-tiny-virtual-list": "2.1.4",
+    "shortid": "2.2.8",
+    "typechecker": "4.5.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
