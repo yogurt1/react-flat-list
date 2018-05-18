@@ -16,21 +16,14 @@ global.shortid = shortid;
 const Item = ({ item }) => (
   <div
     style={{
-      padding: 0,
-      margin: 0
+      backgroundColor: item.color,
+      fontSize: 14,
+      fontFamily: "sans-serif",
+      padding: 8,
+      lineHeight: 1.3
     }}
   >
-    <div
-      style={{
-        backgroundColor: item.color,
-        fontSize: 14,
-        fontFamily: "sans-serif",
-        padding: 8,
-        lineHeight: 1.3
-      }}
-    >
-      {item.text}
-    </div>
+    {item.text}
   </div>
 );
 
