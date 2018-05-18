@@ -30,27 +30,14 @@ const Item = ({ item }) => (
 const App = () => (
   <div
     style={{
-      width: "100vw",
-      height: "100vh"
+      width: "70%",
+      height: "80%",
+      magrin: 10
     }}
   >
-    <div
-      style={{
-        width: "70%",
-        height: "80%",
-        overflow: "hidden",
-        magrin: 10
-      }}
-    >
-      <FlatList
-        defaultHeight={70}
-        height={600}
-        items={items}
-        itemKey={({ item }) => item.id}
-      >
-        {({ item }) => <Item key={item.id} item={item} />}
-      </FlatList>
-    </div>
+    <FlatList defaultHeight={70} size={600} items={items}>
+      {({ item }) => <Item key={item.id} item={item} />}
+    </FlatList>
   </div>
 );
 

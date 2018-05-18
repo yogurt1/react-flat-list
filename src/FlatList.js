@@ -75,17 +75,16 @@ class FlatList extends React.PureComponent {
   };
 
   render() {
-    const { defaultHeight, height, items } = this.props;
+    const { defaultHeight, size, items } = this.props;
     this.cache.setDefaultSize(defaultHeight);
     return (
       <VirtualList
         ref={this.listRef}
-        height={height}
+        height={size}
         itemSize={this.itemSize}
         itemCount={items.length}
         renderItem={this.renderItem}
         estimatedItemSize={defaultHeight}
-        items={items}
       />
     );
   }
@@ -114,7 +113,7 @@ FlatList.propTypes = {
    * Height (100% default)
    * @type {number}
    */
-  height: PropTypes.number,
+  size: PropTypes.number,
 
   /**
    * Renderer
@@ -127,7 +126,7 @@ FlatList.defaultProps = {
   items: [],
   itemKey: defaultKeyGetter,
   defaultHeight: 0,
-  height: "100%"
+  size: "100%"
 };
 
 export default FlatList;
